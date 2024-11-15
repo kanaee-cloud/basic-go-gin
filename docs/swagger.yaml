@@ -67,6 +67,49 @@ definitions:
     - fullname
     - gender
     type: object
+  dto.PublisherCreateReq:
+    properties:
+      city:
+        maxLength: 32
+        minLength: 2
+        type: string
+      name:
+        maxLength: 48
+        minLength: 6
+        type: string
+    required:
+    - city
+    - name
+    type: object
+  dto.PublisherCreateResp:
+    properties:
+      city:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.PublisherDetailResp:
+    properties:
+      city:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.PublisherUpdateReq:
+    properties:
+      city:
+        maxLength: 32
+        minLength: 2
+        type: string
+      name:
+        maxLength: 48
+        minLength: 6
+        type: string
+    type: object
   dto.SuccessResponse-any:
     properties:
       data: {}
@@ -81,6 +124,18 @@ definitions:
       data:
         items:
           $ref: '#/definitions/dto.PersonDetailResp'
+        type: array
+      message:
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  dto.SuccessResponse-array_dto_PublisherDetailResp:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.PublisherDetailResp'
         type: array
       message:
         type: string
@@ -112,6 +167,26 @@ definitions:
     properties:
       data:
         $ref: '#/definitions/dto.PersonDetailResp'
+      message:
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  dto.SuccessResponse-dto_PublisherCreateResp:
+    properties:
+      data:
+        $ref: '#/definitions/dto.PublisherCreateResp'
+      message:
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  dto.SuccessResponse-dto_PublisherDetailResp:
+    properties:
+      data:
+        $ref: '#/definitions/dto.PublisherDetailResp'
       message:
         type: string
       success:
@@ -308,6 +383,169 @@ paths:
       security:
       - BearerAuth: []
       summary: Update a person's detail
+  /publishers:
+    get:
+      description: Get a list of publishers.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-array_dto_PublisherDetailResp'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get a list of publishers
+    post:
+      consumes:
+      - application/json
+      description: Create a new publisher with name and city details.
+      parameters:
+      - description: Publisher's details
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PublisherCreateReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-dto_PublisherCreateResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new publisher
+  /publishers/{id}:
+    delete:
+      description: Delete a publisher by ID.
+      parameters:
+      - description: Publisher's ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-any'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a publisher
+    get:
+      description: Get a publisher's detail.
+      parameters:
+      - description: Publisher's ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-dto_PublisherDetailResp'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get a publisher's detail
+    put:
+      consumes:
+      - application/json
+      description: Update a publisher's detail.
+      parameters:
+      - description: Publisher's ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Publisher's detail
+        in: body
+        name: detail
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PublisherUpdateReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SuccessResponse-any'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a publisher's detail
 securityDefinitions:
   BearerAuth:
     description: Bearer auth containing JWT

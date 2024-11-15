@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"base-gin/app/domain/dto"
+	"base-gin/server"
 	"base-gin/util"
 	"testing"
 
@@ -14,7 +15,7 @@ func Test_Create_Success(t *testing.T) {
 		City: util.RandomStringAlpha(10),
 	}
 
-	w := doTest("POST", "/v1/publishers", req,
+	w := doTest("POST", server.RootPublisher, req,
 		createAuthAccessToken(dummyAdmin.Account.Username))
 	assert.Equal(t, 201, w.Code)
 }
